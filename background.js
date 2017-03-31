@@ -12,7 +12,6 @@ chrome.runtime.onInstalled.addListener(function() {
     });
 });
 
-
 /**
  * The listener for the context menu item with id 'PageHighlight'.
  * When the user clicks this context menu item,
@@ -20,18 +19,9 @@ chrome.runtime.onInstalled.addListener(function() {
  */
 chrome.contextMenus.onClicked.addListener(function(info) {
 	if (info.menuItemId == 'PageHighlight') {
-		onClickSave(info);
+		saveToStorage(info);
 	}
 });
-
-/**
- * When the user clicks "save highlight" in the context menu:
- *	- the selected text must be put into storage
- *	- the selected text should appear highlighted
- */
-function onClickSave(info) {
-	saveToStorage(info);
-}
 
 /**
  * Put the selected text into storage.
