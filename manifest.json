@@ -17,5 +17,14 @@
 	"background": {
 		"scripts": ["background.js"],
 		"persistent": false
-	}
+	},
+
+	"content_scripts": [
+		{
+			"matches": ["<all_urls>"],
+			"css": ["style.css"],
+			"js": ["content.js"],
+			"run_at": "document_end"
+		}
+	]
 }

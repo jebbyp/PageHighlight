@@ -41,3 +41,11 @@ function saveToStorage(info) {
 	});
 }
 
+/**
+ * Get everything from storage. For testing purposes.
+ */
+function getStorage() {
+	chrome.storage.sync.get(function(callback) {
+		console.log(callback);
+	})
+};
