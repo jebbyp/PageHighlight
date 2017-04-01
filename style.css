@@ -1,4 +1,4 @@
-p.highlight {
+span.highlight {
+	font-weight: inherit;
 	background-color: yellow;
-	display: inline;
 }
