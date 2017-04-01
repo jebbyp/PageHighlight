@@ -7,7 +7,7 @@
 chrome.runtime.onInstalled.addListener(function() {
     chrome.contextMenus.create({
         title: 'highlight',
-        id: 'PageHighlight', // you'll use this in the handler function to identify this context menu item
+        id: 'PageHighlight',
         contexts: ['selection'],
     });
 });
