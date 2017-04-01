@@ -1,15 +1,26 @@
 highlightSavedTexts(document.URL);
 
+chrome.storage.onChanged.addListener(function(changedPages, namespace) {
+	for (pageURL in changedPages) {
+		chrome.storage.sync.get(pageURL, function(storageObject) {
+			highlightSavedTexts(pageURL, 1);
+		});
+	}
+})
+
 /**
  * Highlight previously saved texts of this page.
  */
-function highlightSavedTexts(pageURL) {
+function highlightSavedTexts(pageURL, count) {
 	chrome.storage.sync.get(pageURL, function(storageObject) {
 		if (storageObject[pageURL] != undefined) {
 			var savedTexts = storageObject[pageURL];
+			var lastIndex = savedTexts.length-1;
+			// if count undefined, highlight all texts
+			count = count || savedTexts.length;
 			var HTMLElement = document.documentElement;
 			
-			for (i = 0; i < savedTexts.length; i++) {
+			for (i = lastIndex; i > lastIndex-count; i--) {
 				updateHTML(savedTexts[i], HTMLElement);
 			}
 		}
