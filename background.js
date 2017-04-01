@@ -1,42 +1,57 @@
 /**
- When the extension is installed or upgraded,
- create a context menu item with the following properties.
- The context menu item appears only when the user selects text
- on the page.
+ * On extension install or upgrade,
+ * create context menu items with the specified properties
 */
 chrome.runtime.onInstalled.addListener(function() {
     chrome.contextMenus.create({
         title: 'highlight',
-        id: 'PageHighlight',
-        contexts: ['selection'],
+        id: 'highlight',
+        contexts: ['selection']
     });
 });
 
 /**
- * The listener for the context menu item with id 'PageHighlight'.
- * When the user clicks this context menu item,
- * the selected text is saved to storage.
+ * The listener for the context menu items created above
  */
 chrome.contextMenus.onClicked.addListener(function(info) {
-	if (info.menuItemId == 'PageHighlight') {
-		saveToStorage(info);
-	}
+	saveOrRemoveText(info);
 });
 
-/**
- * Put the selected text into storage.
- * Text will be saved by urls in a set.
- */
-function saveToStorage(info) {
-	pageUrl = info.pageUrl;
+function saveOrRemoveText(info) {
+	var pageUrl = info.pageUrl;
+
 	chrome.storage.sync.get(pageUrl, function(storageObject) {
-		// get existing saved texts on the webpage, if any
 		var savedTexts = storageObject[pageUrl] || [];
-		savedTexts.push(info.selectionText);
+		var text = info.selectionText;
 
-		var newStorageObject = {};
-		newStorageObject[pageUrl] = savedTexts;
+		if (savedTexts.includes(text)) {
+			removeTextFromStorage(savedTexts, text, pageUrl);
+		} else {
+			saveTextToStorage(savedTexts, text, pageUrl);
+		}
 
-		chrome.storage.sync.set(newStorageObject);
 	});
+}
+
+/**
+ * Save the selected text into storage.
+ */
+function saveTextToStorage(savedTexts, text, pageUrl) {
+	savedTexts.push(text);
+	updateStorage(savedTexts, pageUrl);
+}
+
+/**
+ * Remove the selected text from storage
+ */
+function removeTextFromStorage(savedTexts, text, pageUrl) {
+	savedTexts.pop(text);
+	updateStorage(savedTexts, pageUrl);
+}
+
+function updateStorage(savedTexts, pageUrl) {
+	var newStorageObject = {};
+	newStorageObject[pageUrl] = savedTexts;
+
+	chrome.storage.sync.set(newStorageObject);
 }
