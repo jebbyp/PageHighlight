@@ -7,7 +7,14 @@ function createButton() {
 	var div = document.getElementById("clearPage");
 	div.appendChild(button);
 
-	button.addEventListener("click", removePage());
+	button.addEventListener("click", removePageFromStorage());
 }
 
-function removePage() {}
+function removePageFromStorage() {
+	chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
+		if (tabs.length != 0) {
+			var pageURL = tabs[0].url;
+			chrome.storage.sync.remove(pageURL);
+		}
+	});
+}
